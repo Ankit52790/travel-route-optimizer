@@ -7,17 +7,17 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Use the latest Ubuntu image for building the Docker container
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v4  # Upgrade to latest version
+      uses: actions/checkout@v4  # Checkout the repository code
 
     - name: Set up Docker Buildx
-      uses: docker/setup-buildx-action@v2  # Upgrade to latest version
+      uses: docker/setup-buildx-action@v2  # Set up Docker Buildx, which is required for building multi-platform images
 
     - name: Cache Docker layers
-      uses: actions/cache@v3  # Upgrade to latest version
+      uses: actions/cache@v3  # Cache Docker layers to speed up builds
       with:
         path: /tmp/.buildx-cache
         key: ${{ runner.os }}-buildx-${{ github.sha }}
@@ -27,8 +27,8 @@ jobs:
     - name: Build Docker image
       run: |
         docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/travel-route-optimizer:${{ github.sha }} .
-    
-    - name: Authenticate to GCR
+
+    - name: Authenticate to GCR (Google Cloud Registry)
       run: |
         echo "${{ secrets.GCP_CREDENTIALS }}" | docker login -u _json_key --password-stdin https://gcr.io
 
